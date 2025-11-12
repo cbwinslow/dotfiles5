@@ -1,0 +1,266 @@
+{
+  "crew_name": "Research Analysis Crew",
+  "crew_version": "1.0.0",
+  "description": "Multi-agent crew for comprehensive research, analysis, and reporting",
+  "purpose": "Conduct thorough research on complex topics and generate comprehensive reports",
+  "agents": [
+    {
+      "role": "Lead Researcher",
+      "agent_type": "web_research_agent",
+      "responsibilities": [
+        "Coordinate research efforts",
+        "Validate sources",
+        "Ensure research quality",
+        "Manage research timeline"
+      ],
+      "tools": [
+        "web_operations",
+        "data_processing"
+      ],
+      "goals": [
+        "Find credible sources",
+        "Extract relevant information",
+        "Validate source accuracy",
+        "Maintain research standards"
+      ],
+      "backstory": "You are an experienced research coordinator with expertise in information validation and source criticism. You ensure all research meets high academic standards.",
+      "configuration": {
+        "verification_level": "high",
+        "source_criticism": "critical",
+        "max_sources_per_topic": 20
+      }
+    },
+    {
+      "role": "Data Analyst",
+      "agent_type": "data_processing_agent",
+      "responsibilities": [
+        "Process collected data",
+        "Perform statistical analysis",
+        "Identify patterns and trends",
+        "Create visualizations"
+      ],
+      "tools": [
+        "data_processing",
+        "file_operations"
+      ],
+      "goals": [
+        "Clean and organize data",
+        "Extract meaningful insights",
+        "Generate statistical summaries",
+        "Create clear visualizations"
+      ],
+      "backstory": "You are a skilled data analyst with expertise in statistical analysis and data visualization. You transform raw data into actionable insights.",
+      "configuration": {
+        "analysis_depth": "comprehensive",
+        "visualization_types": ["charts", "graphs", "tables"],
+        "statistical_tests": ["descriptive", "inferential"]
+      }
+    },
+    {
+      "role": "Content Synthesizer",
+      "agent_type": "web_research_agent",
+      "responsibilities": [
+        "Synthesize findings from multiple sources",
+        "Identify key themes and patterns",
+        "Resolve conflicting information",
+        "Create coherent narrative"
+      ],
+      "tools": [
+        "web_operations",
+        "data_processing"
+      ],
+      "goals": [
+        "Integrate diverse information",
+        "Identify consensus and disagreements",
+        "Create logical flow",
+        "Ensure comprehensive coverage"
+      ],
+      "backstory": "You are an expert content synthesizer skilled at bringing together diverse information sources into coherent, well-structured narratives.",
+      "configuration": {
+        "synthesis_approach": "thematic",
+        "conflict_resolution": "evidence_based",
+        "narrative_style": "academic"
+      }
+    },
+    {
+      "role": "Quality Reviewer",
+      "agent_type": "code_analysis_agent",
+      "responsibilities": [
+        "Review research methodology",
+        "Validate data quality",
+        "Check for biases",
+        "Ensure accuracy"
+      ],
+      "tools": [
+        "code_analysis",
+        "data_processing"
+      ],
+      "goals": [
+        "Ensure methodological soundness",
+        "Validate data integrity",
+        "Identify potential biases",
+        "Maintain quality standards"
+      ],
+      "backstory": "You are a meticulous quality assurance specialist with expertise in research methodology and data validation. You ensure all outputs meet high quality standards.",
+      "configuration": {
+        "quality_standards": "academic",
+        "bias_detection": "comprehensive",
+        "validation_level": "strict"
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "task_name": "Initial Research Planning",
+      "description": "Plan and coordinate the research approach for the given topic",
+      "agent": "Lead Researcher",
+      "expected_output": "Research plan with sources, timeline, and methodology",
+      "dependencies": [],
+      "priority": "high"
+    },
+    {
+      "task_name": "Source Collection and Validation",
+      "description": "Collect and validate credible sources for the research topic",
+      "agent": "Lead Researcher",
+      "expected_output": "Validated list of sources with credibility assessments",
+      "dependencies": ["Initial Research Planning"],
+      "priority": "high"
+    },
+    {
+      "task_name": "Data Extraction and Processing",
+      "description": "Extract relevant data from sources and process for analysis",
+      "agent": "Data Analyst",
+      "expected_output": "Cleaned and organized dataset ready for analysis",
+      "dependencies": ["Source Collection and Validation"],
+      "priority": "high"
+    },
+    {
+      "task_name": "Statistical Analysis",
+      "description": "Perform comprehensive statistical analysis on the processed data",
+      "agent": "Data Analyst",
+      "expected_output": "Statistical findings with visualizations",
+      "dependencies": ["Data Extraction and Processing"],
+      "priority": "medium"
+    },
+    {
+      "task_name": "Content Synthesis",
+      "description": "Synthesize findings from all sources into a coherent narrative",
+      "agent": "Content Synthesizer",
+      "expected_output": "Integrated analysis with key themes and insights",
+      "dependencies": ["Source Collection and Validation", "Statistical Analysis"],
+      "priority": "high"
+    },
+    {
+      "task_name": "Quality Review",
+      "description": "Review all research outputs for quality, accuracy, and bias",
+      "agent": "Quality Reviewer",
+      "expected_output": "Quality assessment report with recommendations",
+      "dependencies": ["Content Synthesis", "Statistical Analysis"],
+      "priority": "high"
+    },
+    {
+      "task_name": "Final Report Generation",
+      "description": "Generate comprehensive final report incorporating all findings",
+      "agent": "Lead Researcher",
+      "expected_output": "Complete research report with executive summary and recommendations",
+      "dependencies": ["Content Synthesis", "Quality Review"],
+      "priority": "high"
+    }
+  ],
+  "process": {
+    "type": "hierarchical",
+    "manager_agent": "Lead Researcher",
+    "execution_order": "sequential",
+    "max_rpm": 60,
+    "share_crew": true,
+    "verbose": true
+  },
+  "collaboration": {
+    "communication_protocol": "structured",
+    "information_sharing": "full",
+    "decision_making": "consensus_based",
+    "conflict_resolution": "evidence_based"
+  },
+  "quality_control": {
+    "review_points": [
+      "after_data_collection",
+      "after_analysis",
+      "before_final_output"
+    ],
+    "quality_metrics": [
+      "source_credibility",
+      "data_accuracy",
+      "analysis_completeness",
+      "narrative_coherence"
+    ],
+    "minimum_quality_score": 0.8
+  },
+  "output_format": {
+    "default": "comprehensive_report",
+    "sections": [
+      "executive_summary",
+      "methodology",
+      "findings",
+      "analysis",
+      "conclusions",
+      "recommendations",
+      "appendices"
+    ],
+    "formats": ["markdown", "pdf", "html"]
+  },
+  "tools_and_resources": {
+    "shared_tools": [
+      "file_operations",
+      "data_processing"
+    ],
+    "external_apis": [
+      "academic_databases",
+      "search_engines",
+      "citation_services"
+    ],
+    "databases": [
+      "research_cache",
+      "source_reputation_db"
+    ]
+  },
+  "performance_metrics": {
+    "success_criteria": [
+      "comprehensive_coverage",
+      "source_credibility",
+      "analytical_depth",
+      "report_quality"
+    ],
+    "efficiency_metrics": [
+      "research_time",
+      "source_validation_rate",
+      "analysis_accuracy",
+      "review_effectiveness"
+    ],
+    "quality_indicators": [
+      "source_diversity",
+      "methodological_soundness",
+      "insight_quality",
+      "recommendation_actionability"
+    ]
+  },
+  "safety_constraints": {
+    "source_validation_required": true,
+    "bias_detection_enabled": true,
+    "privacy_protection": "strict",
+    "rate_limiting": true,
+    "content_filters": "academic"
+  },
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "date": "2025-11-12",
+      "changes": "Initial release with comprehensive research capabilities"
+    }
+  ],
+  "maintenance": {
+    "last_updated": "2025-11-12",
+    "next_review": "2025-12-12",
+    "update_frequency": "monthly",
+    "performance_monitoring": "continuous"
+  }
+}

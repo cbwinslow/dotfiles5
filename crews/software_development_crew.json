@@ -1,0 +1,304 @@
+{
+  "crew_name": "Software Development Crew",
+  "crew_version": "1.0.0",
+  "description": "Multi-agent crew for comprehensive software development, analysis, and quality assurance",
+  "purpose": "Develop, analyze, and maintain high-quality software through collaborative agent workflows",
+  "agents": [
+    {
+      "role": "Lead Developer",
+      "agent_type": "code_analysis_agent",
+      "responsibilities": [
+        "Coordinate development efforts",
+        "Architect software solutions",
+        "Review code quality",
+        "Ensure best practices"
+      ],
+      "tools": [
+        "code_analysis",
+        "file_operations"
+      ],
+      "goals": [
+        "Design robust architectures",
+        "Ensure code quality",
+        "Coordinate team efforts",
+        "Maintain development standards"
+      ],
+      "backstory": "You are an experienced software architect and team lead with expertise in system design, code quality, and development best practices. You ensure all development meets high industry standards.",
+      "configuration": {
+        "analysis_depth": "comprehensive",
+        "quality_standards": "industry_best_practices",
+        "architecture_focus": "scalable_maintainable"
+      }
+    },
+    {
+      "role": "Security Specialist",
+      "agent_type": "code_analysis_agent",
+      "responsibilities": [
+        "Conduct security audits",
+        "Identify vulnerabilities",
+        "Implement security measures",
+        "Ensure compliance"
+      ],
+      "tools": [
+        "code_analysis",
+        "web_operations"
+      ],
+      "goals": [
+        "Identify security vulnerabilities",
+        "Implement security best practices",
+        "Ensure regulatory compliance",
+        "Maintain security standards"
+      ],
+      "backstory": "You are a cybersecurity specialist with deep expertise in application security, vulnerability assessment, and secure coding practices. You ensure all code is secure and compliant.",
+      "configuration": {
+        "security_scan_level": "comprehensive",
+        "vulnerability_detection": "thorough",
+        "compliance_standards": ["owasp", "nist", "iso27001"]
+      }
+    },
+    {
+      "role": "Quality Assurance Engineer",
+      "agent_type": "code_analysis_agent",
+      "responsibilities": [
+        "Design test strategies",
+        "Execute quality checks",
+        "Performance testing",
+        "Quality reporting"
+      ],
+      "tools": [
+        "code_analysis",
+        "data_processing"
+      ],
+      "goals": [
+        "Ensure comprehensive testing",
+        "Maintain quality standards",
+        "Optimize performance",
+        "Generate quality reports"
+      ],
+      "backstory": "You are a quality assurance expert specializing in automated testing, performance analysis, and quality metrics. You ensure all software meets high quality standards.",
+      "configuration": {
+        "testing_approach": "comprehensive",
+        "performance_analysis": true,
+        "quality_metrics": "detailed"
+      }
+    },
+    {
+      "role": "Documentation Specialist",
+      "agent_type": "web_research_agent",
+      "responsibilities": [
+        "Generate technical documentation",
+        "Create user guides",
+        "Maintain API documentation",
+        "Document architecture"
+      ],
+      "tools": [
+        "file_operations",
+        "web_operations"
+      ],
+      "goals": [
+        "Create comprehensive documentation",
+        "Ensure documentation accuracy",
+        "Maintain documentation standards",
+        "Support knowledge transfer"
+      ],
+      "backstory": "You are a technical writing expert with skills in creating clear, comprehensive documentation for software projects. You ensure all documentation is accurate and user-friendly.",
+      "configuration": {
+        "documentation_style": "comprehensive",
+        "target_audience": ["developers", "users", "administrators"],
+        "format_standards": ["markdown", "html", "pdf"]
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "task_name": "Project Analysis and Planning",
+      "description": "Analyze project requirements and create development plan",
+      "agent": "Lead Developer",
+      "expected_output": "Development plan with architecture, timeline, and resource allocation",
+      "dependencies": [],
+      "priority": "high"
+    },
+    {
+      "task_name": "Security Requirements Analysis",
+      "description": "Identify security requirements and compliance needs",
+      "agent": "Security Specialist",
+      "expected_output": "Security requirements document with compliance checklist",
+      "dependencies": ["Project Analysis and Planning"],
+      "priority": "high"
+    },
+    {
+      "task_name": "Quality Strategy Development",
+      "description": "Create comprehensive testing and quality assurance strategy",
+      "agent": "Quality Assurance Engineer",
+      "expected_output": "Quality assurance plan with test strategies and metrics",
+      "dependencies": ["Project Analysis and Planning"],
+      "priority": "high"
+    },
+    {
+      "task_name": "Code Architecture Review",
+      "description": "Review and analyze existing code architecture",
+      "agent": "Lead Developer",
+      "expected_output": "Architecture analysis report with recommendations",
+      "dependencies": ["Project Analysis and Planning"],
+      "priority": "medium"
+    },
+    {
+      "task_name": "Security Audit",
+      "description": "Conduct comprehensive security audit of codebase",
+      "agent": "Security Specialist",
+      "expected_output": "Security audit report with vulnerability findings and remediation plan",
+      "dependencies": ["Code Architecture Review"],
+      "priority": "high"
+    },
+    {
+      "task_name": "Code Quality Assessment",
+      "description": "Assess overall code quality and maintainability",
+      "agent": "Quality Assurance Engineer",
+      "expected_output": "Code quality report with metrics and improvement suggestions",
+      "dependencies": ["Code Architecture Review"],
+      "priority": "medium"
+    },
+    {
+      "task_name": "Performance Analysis",
+      "description": "Analyze application performance and identify bottlenecks",
+      "agent": "Quality Assurance Engineer",
+      "expected_output": "Performance analysis report with optimization recommendations",
+      "dependencies": ["Code Quality Assessment"],
+      "priority": "medium"
+    },
+    {
+      "task_name": "Documentation Generation",
+      "description": "Generate comprehensive technical documentation",
+      "agent": "Documentation Specialist",
+      "expected_output": "Complete documentation package including API docs, user guides, and architecture documentation",
+      "dependencies": ["Security Audit", "Code Quality Assessment", "Performance Analysis"],
+      "priority": "medium"
+    },
+    {
+      "task_name": "Integration Review",
+      "description": "Review system integration points and dependencies",
+      "agent": "Lead Developer",
+      "expected_output": "Integration analysis report with dependency mapping",
+      "dependencies": ["Security Audit", "Code Quality Assessment"],
+      "priority": "medium"
+    },
+    {
+      "task_name": "Final Assessment Report",
+      "description": "Create comprehensive final assessment report",
+      "agent": "Lead Developer",
+      "expected_output": "Complete assessment report with findings, recommendations, and action items",
+      "dependencies": ["Documentation Generation", "Integration Review", "Performance Analysis"],
+      "priority": "high"
+    }
+  ],
+  "process": {
+    "type": "hierarchical",
+    "manager_agent": "Lead Developer",
+    "execution_order": "sequential_with_parallel",
+    "max_rpm": 60,
+    "share_crew": true,
+    "verbose": true,
+    "cache": true
+  },
+  "collaboration": {
+    "communication_protocol": "structured",
+    "information_sharing": "selective",
+    "decision_making": "expertise_based",
+    "conflict_resolution": "evidence_based",
+    "review_process": "peer_review"
+  },
+  "quality_gates": {
+    "code_quality_threshold": 0.8,
+    "security_score_minimum": 0.9,
+    "performance_baseline": "established",
+    "documentation_completeness": 0.95,
+    "test_coverage_minimum": 0.8
+  },
+  "development_standards": {
+    "coding_standards": "industry_best_practices",
+    "security_standards": ["owasp_top_10", "secure_coding"],
+    "testing_standards": ["unit_testing", "integration_testing", "security_testing"],
+    "documentation_standards": ["api_documentation", "code_comments", "user_guides"]
+  },
+  "tools_and_resources": {
+    "shared_tools": [
+      "code_analysis",
+      "file_operations",
+      "data_processing"
+    ],
+    "development_tools": [
+      "version_control",
+      "ci_cd_pipeline",
+      "code_review_tools"
+    ],
+    "security_tools": [
+      "vulnerability_scanners",
+      "static_analysis_tools",
+      "dependency_checkers"
+    ],
+    "quality_tools": [
+      "testing_frameworks",
+      "performance_profilers",
+      "code_quality_meters"
+    ]
+  },
+  "reporting": {
+    "progress_reports": "daily",
+    "quality_metrics": "real_time",
+    "security_status": "immediate",
+    "final_deliverables": [
+      "comprehensive_assessment_report",
+      "security_audit_report",
+      "quality_assurance_report",
+      "technical_documentation",
+      "recommendations_roadmap"
+    ]
+  },
+  "performance_metrics": {
+    "efficiency_metrics": [
+      "analysis_time",
+      "issue_detection_rate",
+      "recommendation_accuracy",
+      "documentation_completeness"
+    ],
+    "quality_metrics": [
+      "code_quality_score",
+      "security_posture",
+      "performance_baseline",
+      "maintainability_index"
+    ],
+    "collaboration_metrics": [
+      "communication_efficiency",
+      "decision_quality",
+      "conflict_resolution_time",
+      "team_coordination_effectiveness"
+    ]
+  },
+  "safety_constraints": {
+    "read_only_analysis": true,
+    "no_code_modification": true,
+    "sensitive_data_protection": true,
+    "access_control": "role_based",
+    "audit_trail": "comprehensive"
+  },
+  "integration_points": {
+    "version_control": ["git", "svn", "mercurial"],
+    "ci_cd_platforms": ["jenkins", "github_actions", "gitlab_ci"],
+    "project_management": ["jira", "azure_devops", "trello"],
+    "communication": ["slack", "teams", "email"]
+  },
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "date": "2025-11-12",
+      "changes": "Initial release with comprehensive software development capabilities"
+    }
+  ],
+  "maintenance": {
+    "last_updated": "2025-11-12",
+    "next_review": "2025-12-12",
+    "update_frequency": "monthly",
+    "performance_monitoring": "continuous",
+    "skill_updates": "quarterly"
+  }
+}

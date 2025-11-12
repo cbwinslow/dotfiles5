@@ -1,0 +1,458 @@
+{
+  "server_name": "Web Operations MCP Server",
+  "server_version": "1.0.0",
+  "description": "Model Context Protocol server for web operations and data extraction",
+  "server_type": "web_operations",
+  "protocol_version": "2024-11-05",
+  "capabilities": {
+    "tools": {
+      "listChanged": true
+    },
+    "resources": {
+      "subscribe": true,
+      "listChanged": true
+    },
+    "prompts": {
+      "listChanged": true
+    },
+    "logging": {
+      "level": "info"
+    }
+  },
+  "tools": [
+    {
+      "name": "fetch_url",
+      "description": "Fetch content from a URL with comprehensive options",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to fetch"
+          },
+          "method": {
+            "type": "string",
+            "enum": ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+            "description": "HTTP method to use",
+            "default": "GET"
+          },
+          "headers": {
+            "type": "object",
+            "description": "Additional HTTP headers"
+          },
+          "data": {
+            "type": "object",
+            "description": "Request data for POST/PUT requests"
+          },
+          "timeout": {
+            "type": "integer",
+            "description": "Request timeout in seconds",
+            "default": 30
+          },
+          "follow_redirects": {
+            "type": "boolean",
+            "description": "Follow HTTP redirects",
+            "default": true
+          },
+          "verify_ssl": {
+            "type": "boolean",
+            "description": "Verify SSL certificates",
+            "default": true
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "scrape_webpage",
+      "description": "Scrape webpage content and extract structured data",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the webpage to scrape"
+          },
+          "extract_links": {
+            "type": "boolean",
+            "description": "Extract all links from the page",
+            "default": true
+          },
+          "extract_images": {
+            "type": "boolean",
+            "description": "Extract all images from the page",
+            "default": true
+          },
+          "extract_text": {
+            "type": "boolean",
+            "description": "Extract text content",
+            "default": true
+          },
+          "extract_meta": {
+            "type": "boolean",
+            "description": "Extract meta tags and structured data",
+            "default": true
+          },
+          "css_selectors": {
+            "type": "object",
+            "description": "Custom CSS selectors for specific content extraction"
+          },
+          "wait_for_selector": {
+            "type": "string",
+            "description": "CSS selector to wait for before scraping"
+          },
+          "javascript_rendering": {
+            "type": "boolean",
+            "description": "Enable JavaScript rendering",
+            "default": false
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "search_web",
+      "description": "Perform web search using various search engines",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "search_engine": {
+            "type": "string",
+            "enum": ["google", "bing", "duckduckgo", "custom"],
+            "description": "Search engine to use",
+            "default": "duckduckgo"
+          },
+          "num_results": {
+            "type": "integer",
+            "description": "Number of results to return",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 50
+          },
+          "language": {
+            "type": "string",
+            "description": "Language code (e.g., 'en', 'es', 'fr')",
+            "default": "en"
+          },
+          "region": {
+            "type": "string",
+            "description": "Region code (e.g., 'us', 'uk', 'ca')",
+            "default": "us"
+          },
+          "safe_search": {
+            "type": "string",
+            "enum": ["off", "moderate", "strict"],
+            "description": "Safe search level",
+            "default": "moderate"
+          },
+          "time_range": {
+            "type": "string",
+            "enum": ["any", "day", "week", "month", "year"],
+            "description": "Time range for search results",
+            "default": "any"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "download_file",
+      "description": "Download file from URL to local storage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the file to download"
+          },
+          "save_path": {
+            "type": "string",
+            "description": "Local path to save the file"
+          },
+          "chunk_size": {
+            "type": "integer",
+            "description": "Download chunk size in bytes",
+            "default": 8192
+          },
+          "resume_download": {
+            "type": "boolean",
+            "description": "Resume interrupted downloads",
+            "default": true
+          },
+          "verify_integrity": {
+            "type": "boolean",
+            "description": "Verify file integrity after download",
+            "default": true
+          },
+          "expected_hash": {
+            "type": "string",
+            "description": "Expected file hash for integrity verification"
+          }
+        },
+        "required": ["url", "save_path"]
+      }
+    },
+    {
+      "name": "validate_url",
+      "description": "Validate URL format and accessibility",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to validate"
+          },
+          "check_accessibility": {
+            "type": "boolean",
+            "description": "Check if URL is accessible",
+            "default": true
+          },
+          "timeout": {
+            "type": "integer",
+            "description": "Timeout for accessibility check",
+            "default": 10
+          },
+          "follow_redirects": {
+            "type": "boolean",
+            "description": "Follow redirects during validation",
+            "default": true
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "extract_structured_data",
+      "description": "Extract structured data (JSON-LD, microdata) from webpage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL of the webpage"
+          },
+          "data_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["json-ld", "microdata", "rdfa", "opengraph", "twitter-cards"]
+            },
+            "description": "Types of structured data to extract",
+            "default": ["json-ld", "microdata", "opengraph"]
+          },
+          "custom_selectors": {
+            "type": "object",
+            "description": "Custom CSS selectors for data extraction"
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "monitor_website_changes",
+      "description": "Monitor website for changes over time",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to monitor"
+          },
+          "check_interval": {
+            "type": "integer",
+            "description": "Check interval in minutes",
+            "default": 60
+          },
+          "monitor_duration": {
+            "type": "integer",
+            "description": "Monitoring duration in hours",
+            "default": 24
+          },
+          "change_threshold": {
+            "type": "number",
+            "description": "Change threshold (0.0-1.0)",
+            "default": 0.1
+          },
+          "notification_webhook": {
+            "type": "string",
+            "description": "Webhook URL for change notifications"
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "batch_process_urls",
+      "description": "Process multiple URLs in batch with specified operations",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of URLs to process"
+          },
+          "operations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["scrape", "validate", "extract_data", "screenshot"]
+            },
+            "description": "Operations to perform on each URL"
+          },
+          "concurrent_limit": {
+            "type": "integer",
+            "description": "Maximum concurrent requests",
+            "default": 5
+          },
+          "delay_between_requests": {
+            "type": "number",
+            "description": "Delay between requests in seconds",
+            "default": 1.0
+          },
+          "retry_failed": {
+            "type": "boolean",
+            "description": "Retry failed requests",
+            "default": true
+          },
+          "max_retries": {
+            "type": "integer",
+            "description": "Maximum retry attempts",
+            "default": 3
+          }
+        },
+        "required": ["urls", "operations"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "web://localhost/",
+      "name": "Web Resources",
+      "description": "Access to web resources and data",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "search://localhost/",
+      "name": "Search Results",
+      "description": "Search engine results and queries",
+      "mimeType": "application/json"
+    }
+  ],
+  "prompts": [
+    {
+      "name": "web_research",
+      "description": "Conduct comprehensive web research on a topic",
+      "arguments": [
+        {
+          "name": "topic",
+          "description": "Research topic",
+          "required": true
+        },
+        {
+          "name": "depth",
+          "description": "Research depth level",
+          "required": false
+        },
+        {
+          "name": "sources",
+          "description": "Number of sources to analyze",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "content_analysis",
+      "description": "Analyze web content for specific information",
+      "arguments": [
+        {
+          "name": "url",
+          "description": "URL to analyze",
+          "required": true
+        },
+        {
+          "name": "analysis_type",
+          "description": "Type of analysis to perform",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "configuration": {
+    "user_agent": "CBW-WebOperations-MCP/1.0 (Educational Purpose)",
+    "default_timeout": 30,
+    "max_concurrent_requests": 10,
+    "max_response_size": 10485760,
+    "enable_logging": true,
+    "log_level": "info",
+    "cache_enabled": true,
+    "cache_ttl": 300,
+    "respect_robots_txt": true
+  },
+  "security": {
+    "allowed_domains": [],
+    "blocked_domains": [
+      "malicious-site.com",
+      "spam-site.net"
+    ],
+    "max_file_download_size": 52428800,
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 60,
+      "burst_size": 10
+    },
+    "content_filtering": {
+      "enabled": true,
+      "block_malicious_content": true,
+      "scan_downloads": true
+    }
+  },
+  "implementation": {
+    "runtime": "python",
+    "dependencies": [
+      "mcp",
+      "aiohttp",
+      "beautifulsoup4",
+      "lxml",
+      "requests",
+      "playwright"
+    ],
+    "entry_point": "web_operations_server.py",
+    "environment_variables": {
+      "WEB_OPERATIONS_LOG_LEVEL": "info",
+      "WEB_OPERATIONS_TIMEOUT": "30",
+      "WEB_OPERATIONS_USER_AGENT": "CBW-WebOperations-MCP/1.0"
+    }
+  },
+  "monitoring": {
+    "metrics": {
+      "request_count": true,
+      "response_time": true,
+      "error_rate": true,
+      "cache_hit_rate": true
+    },
+    "health_checks": {
+      "dns_resolution": true,
+      "http_connectivity": true,
+      "ssl_verification": true
+    }
+  },
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "date": "2025-11-12",
+      "changes": "Initial release with comprehensive web operations"
+    }
+  ],
+  "maintenance": {
+    "last_updated": "2025-11-12",
+    "next_review": "2025-12-12",
+    "update_frequency": "monthly"
+  }
+}

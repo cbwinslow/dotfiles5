@@ -1,0 +1,371 @@
+{
+  "server_name": "File Operations MCP Server",
+  "server_version": "1.0.0",
+  "description": "Model Context Protocol server for comprehensive file operations",
+  "server_type": "file_operations",
+  "protocol_version": "2024-11-05",
+  "capabilities": {
+    "tools": {
+      "listChanged": true
+    },
+    "resources": {
+      "subscribe": true,
+      "listChanged": true
+    },
+    "prompts": {
+      "listChanged": true
+    },
+    "logging": {
+      "level": "info"
+    }
+  },
+  "tools": [
+    {
+      "name": "read_file",
+      "description": "Read contents of a file with encoding support",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path to the file to read"
+          },
+          "encoding": {
+            "type": "string",
+            "description": "File encoding (default: utf-8)",
+            "default": "utf-8"
+          },
+          "start_line": {
+            "type": "integer",
+            "description": "Starting line number (1-based, optional)"
+          },
+          "end_line": {
+            "type": "integer",
+            "description": "Ending line number (1-based, optional)"
+          }
+        },
+        "required": ["file_path"]
+      }
+    },
+    {
+      "name": "write_file",
+      "description": "Write content to a file",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path to the file to write"
+          },
+          "content": {
+            "type": "string",
+            "description": "Content to write to the file"
+          },
+          "encoding": {
+            "type": "string",
+            "description": "File encoding (default: utf-8)",
+            "default": "utf-8"
+          },
+          "create_directories": {
+            "type": "boolean",
+            "description": "Create parent directories if they don't exist",
+            "default": true
+          }
+        },
+        "required": ["file_path", "content"]
+      }
+    },
+    {
+      "name": "list_directory",
+      "description": "List contents of a directory",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "directory_path": {
+            "type": "string",
+            "description": "Path to the directory to list"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "List directories recursively",
+            "default": false
+          },
+          "include_hidden": {
+            "type": "boolean",
+            "description": "Include hidden files and directories",
+            "default": false
+          },
+          "pattern": {
+            "type": "string",
+            "description": "File pattern to match (glob style)"
+          }
+        },
+        "required": ["directory_path"]
+      }
+    },
+    {
+      "name": "search_files",
+      "description": "Search for files matching criteria",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "search_path": {
+            "type": "string",
+            "description": "Path to search in"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Search pattern (filename or content)"
+          },
+          "search_type": {
+            "type": "string",
+            "enum": ["filename", "content", "extension"],
+            "description": "Type of search to perform",
+            "default": "filename"
+          },
+          "case_sensitive": {
+            "type": "boolean",
+            "description": "Case sensitive search",
+            "default": false
+          },
+          "max_results": {
+            "type": "integer",
+            "description": "Maximum number of results to return",
+            "default": 100
+          }
+        },
+        "required": ["search_path", "pattern"]
+      }
+    },
+    {
+      "name": "create_directory",
+      "description": "Create a new directory",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "directory_path": {
+            "type": "string",
+            "description": "Path to the directory to create"
+          },
+          "create_parents": {
+            "type": "boolean",
+            "description": "Create parent directories if needed",
+            "default": true
+          }
+        },
+        "required": ["directory_path"]
+      }
+    },
+    {
+      "name": "delete_file_or_directory",
+      "description": "Delete a file or directory",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file or directory to delete"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "Delete directories recursively",
+            "default": false
+          },
+          "force": {
+            "type": "boolean",
+            "description": "Force deletion without confirmation",
+            "default": false
+          }
+        },
+        "required": ["path"]
+      }
+    },
+    {
+      "name": "get_file_info",
+      "description": "Get detailed information about a file or directory",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the file or directory"
+          },
+          "include_hash": {
+            "type": "boolean",
+            "description": "Include file hash in output",
+            "default": false
+          },
+          "hash_algorithm": {
+            "type": "string",
+            "enum": ["md5", "sha1", "sha256"],
+            "description": "Hash algorithm to use",
+            "default": "sha256"
+          }
+        },
+        "required": ["path"]
+      }
+    },
+    {
+      "name": "copy_file_or_directory",
+      "description": "Copy a file or directory",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source_path": {
+            "type": "string",
+            "description": "Source path to copy from"
+          },
+          "destination_path": {
+            "type": "string",
+            "description": "Destination path to copy to"
+          },
+          "overwrite": {
+            "type": "boolean",
+            "description": "Overwrite existing files",
+            "default": false
+          },
+          "preserve_permissions": {
+            "type": "boolean",
+            "description": "Preserve file permissions",
+            "default": true
+          }
+        },
+        "required": ["source_path", "destination_path"]
+      }
+    },
+    {
+      "name": "move_file_or_directory",
+      "description": "Move or rename a file or directory",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source_path": {
+            "type": "string",
+            "description": "Source path to move from"
+          },
+          "destination_path": {
+            "type": "string",
+            "description": "Destination path to move to"
+          },
+          "overwrite": {
+            "type": "boolean",
+            "description": "Overwrite existing files",
+            "default": false
+          }
+        },
+        "required": ["source_path", "destination_path"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "file://localhost/",
+      "name": "Local File System",
+      "description": "Access to the local file system",
+      "mimeType": "application/json"
+    }
+  ],
+  "prompts": [
+    {
+      "name": "file_analysis",
+      "description": "Analyze file structure and content",
+      "arguments": [
+        {
+          "name": "file_path",
+          "description": "Path to the file to analyze",
+          "required": true
+        },
+        {
+          "name": "analysis_type",
+          "description": "Type of analysis to perform",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "directory_summary",
+      "description": "Generate a summary of directory contents",
+      "arguments": [
+        {
+          "name": "directory_path",
+          "description": "Path to the directory to summarize",
+          "required": true
+        },
+        {
+          "name": "include_content_preview",
+          "description": "Include preview of file contents",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "configuration": {
+    "allowed_paths": [
+      ".",
+      "./workspace",
+      "./projects"
+    ],
+    "blocked_paths": [
+      "/etc",
+      "/usr/bin",
+      "/system",
+      "~/.ssh"
+    ],
+    "max_file_size": 104857600,
+    "max_concurrent_operations": 10,
+    "enable_logging": true,
+    "log_level": "info",
+    "enable_file_watching": true,
+    "auto_save_interval": 300
+  },
+  "security": {
+    "path_validation": "strict",
+    "symlink_protection": true,
+    "permission_checks": true,
+    "audit_logging": true,
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 100,
+      "burst_size": 20
+    }
+  },
+  "implementation": {
+    "runtime": "python",
+    "dependencies": [
+      "mcp",
+      "pathlib",
+      "aiofiles",
+      "watchdog"
+    ],
+    "entry_point": "file_operations_server.py",
+    "environment_variables": {
+      "FILE_OPERATIONS_LOG_LEVEL": "info",
+      "FILE_OPERATIONS_MAX_SIZE": "104857600"
+    }
+  },
+  "monitoring": {
+    "metrics": {
+      "operation_count": true,
+      "operation_duration": true,
+      "error_rate": true,
+      "active_connections": true
+    },
+    "health_checks": {
+      "filesystem_access": true,
+      "permission_validation": true,
+      "memory_usage": true
+    }
+  },
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "date": "2025-11-12",
+      "changes": "Initial release with comprehensive file operations"
+    }
+  ],
+  "maintenance": {
+    "last_updated": "2025-11-12",
+    "next_review": "2025-12-12",
+    "update_frequency": "monthly"
+  }
+}

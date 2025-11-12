@@ -1,0 +1,216 @@
+{
+  "agent_name": "Data Processing Agent",
+  "agent_type": "analytics",
+  "version": "1.0.0",
+  "description": "Specialized agent for data processing, analysis, and visualization tasks",
+  "capabilities": [
+    "data_ingestion",
+    "data_cleaning",
+    "statistical_analysis",
+    "data_transformation",
+    "visualization_generation",
+    "report_creation"
+  ],
+  "tools": [
+    "data_processing",
+    "file_operations",
+    "web_operations"
+  ],
+  "toolsets": [],
+  "configuration": {
+    "max_data_size_mb": 500,
+    "supported_formats": [
+      "csv",
+      "json",
+      "excel",
+      "parquet",
+      "xml",
+      "sql"
+    ],
+    "default_encoding": "utf-8",
+    "chunk_size": 10000,
+    "parallel_processing": true,
+    "memory_limit_mb": 1024
+  },
+  "behavior": {
+    "processing_approach": "systematic",
+    "data_validation": "strict",
+    "error_handling": "robust",
+    "optimization_focus": "performance",
+    "quality_assurance": "high"
+  },
+  "output_format": {
+    "default": "structured_analysis",
+    "alternatives": [
+      "summary_report",
+      "visual_dashboard",
+      "raw_data",
+      "statistical_summary"
+    ]
+  },
+  "data_processing_pipeline": {
+    "stages": [
+      "validation",
+      "cleaning",
+      "transformation",
+      "analysis",
+      "visualization"
+    ],
+    "auto_detect_issues": true,
+    "suggest_corrections": true,
+    "quality_checks": true
+  },
+  "analysis_parameters": {
+    "statistical_tests": [
+      "descriptive_stats",
+      "correlation_analysis",
+      "hypothesis_testing",
+      "regression_analysis",
+      "time_series_analysis"
+    ],
+    "visualization_types": [
+      "histograms",
+      "scatter_plots",
+      "line_charts",
+      "heatmaps",
+      "box_plots",
+      "bar_charts"
+    ],
+    "quality_metrics": [
+      "completeness",
+      "accuracy",
+      "consistency",
+      "validity",
+      "uniqueness"
+    ]
+  },
+  "data_quality_rules": {
+    "completeness_threshold": 0.95,
+    "accuracy_checks": true,
+    "duplicate_detection": true,
+    "outlier_detection": true,
+    "format_validation": true,
+    "range_validation": true
+  },
+  "transformation_rules": {
+    "normalization_methods": [
+      "min_max",
+      "z_score",
+      "robust_scaler"
+    ],
+    "encoding_methods": [
+      "one_hot",
+      "label_encoding",
+      "target_encoding"
+    ],
+    "feature_engineering": true,
+    "dimensionality_reduction": true
+  },
+  "safety_constraints": {
+    "data_privacy": "strict",
+    "pii_detection": true,
+    "data_anonymization": true,
+    "secure_storage": true,
+    "access_logging": true
+  },
+  "memory_management": {
+    "streaming_for_large_files": true,
+    "chunk_processing": true,
+    "garbage_collection": "aggressive",
+    "cache_management": "intelligent"
+  },
+  "error_handling": {
+    "data_error_recovery": true,
+    "partial_processing_allowed": true,
+    "error_logging": "detailed",
+    "rollback_capability": true
+  },
+  "visualization_settings": {
+    "default_theme": "professional",
+    "color_palette": "accessible",
+    "interactive_charts": true,
+    "export_formats": [
+      "png",
+      "svg",
+      "pdf",
+      "html"
+    ]
+  },
+  "report_templates": {
+    "executive_summary": {
+      "sections": [
+        "key_findings",
+        "recommendations",
+        "data_quality_assessment"
+      ]
+    },
+    "detailed_analysis": {
+      "sections": [
+        "methodology",
+        "descriptive_statistics",
+        "inferential_statistics",
+        "visualizations",
+        "limitations",
+        "conclusions"
+      ]
+    },
+    "technical_report": {
+      "sections": [
+        "data_overview",
+        "processing_steps",
+        "statistical_methods",
+        "code_appendix",
+        "raw_data_references"
+      ]
+    }
+  },
+  "integration_points": {
+    "databases": [
+      "postgresql",
+      "mysql",
+      "sqlite",
+      "mongodb"
+    ],
+    "cloud_storage": [
+      "aws_s3",
+      "google_cloud_storage",
+      "azure_blob_storage"
+    ],
+    "analytics_platforms": [
+      "tableau",
+      "power_bi",
+      "google_analytics",
+      "mixpanel"
+    ],
+    "apis": [
+      "rest_apis",
+      "graphql",
+      "webhook_endpoints"
+    ]
+  },
+  "automation_features": {
+    "scheduled_processing": true,
+    "real_time_monitoring": true,
+    "alert_system": true,
+    "pipeline_automation": true
+  },
+  "performance_optimization": {
+    "query_optimization": true,
+    "index_usage": true,
+    "caching_strategy": "intelligent",
+    "parallel_execution": true
+  },
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "date": "2025-11-12",
+      "changes": "Initial release with comprehensive data processing capabilities"
+    }
+  ],
+  "maintenance": {
+    "last_updated": "2025-11-12",
+    "next_review": "2025-12-12",
+    "update_frequency": "monthly",
+    "performance_monitoring": "continuous"
+  }
+}
