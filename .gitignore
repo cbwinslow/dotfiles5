@@ -1,102 +1,313 @@
-# Logs
+# Ignore generated secret files and other large or transient artifacts
+# Keep this file in the chezmoi source directory to avoid accidentally
+# committing large files to the dotfiles repository.
+
+# Logs and rotated logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*.log.*
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output
-
-# Dependency directories
-node_modules/
-jspm_packages/
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Output of 'npm pack'
+# Archives and large binary blobs
+*.zip
+*.tar
+*.tar.gz
 *.tgz
+*.gz
+*.bz2
+*.7z
+*.iso
+*.img
 
-# Yarn Integrity file
-.yarn-integrity
+# Media files
+*.mp4
+*.mkv
+*.mov
+*.mp3
+*.flac
+*.avi
+*.ogg
 
-# dotenv environment variables file
-.env
-.env.test
-.env.local
-.env.production
+# Database files
+*.db
+*.sqlite
+*.sqlite3
 
-# IDE files
+# Node / JS build artifacts
+node_modules/
+dist/
+build/
+
+# Typical caches and transient dirs
+.cache/
+tmp/
+temp/
+downloads/
+
+# Terraform and vendor dirs
+.terraform/
+vendor/
+
+# Editor / OS cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Private keys and VPN configs
+*.pem
+*.key
+*.ppk
+*.ovpn
+
+# Compressed logpack / backup files
+*.bak
+*.old
+
+# Large lockfiles (sometimes contain vendored blobs)
+package-lock.json
+yarn.lock
+
+# Bitwarden / password exports (do NOT commit plaintext exports)
+*.bw.zip
+*.bw.json
+
+# Bitwarden session file (contains sensitive session key)
+.bw_session
+
+# Large binary files and executables
+*.exe
+*.dll
+*.so
+*.dylib
+*.jar
+*.deb
+*.rpm
+*.dmg
+*.iso
+*.img
+*.tar.gz
+*.zip
+*.7z
+*.rar
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+
+# Log files
+*.log
+*.log.*
+logs/
+*.log.gz
+
+# Cache directories
+.cache/
+__pycache__/
+node_modules/
+.cache/
+tmp/
+temp/
+
+# IDE and editor specific
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
+# OS specific
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+desktop.ini
 
 # Temporary files
 *.tmp
 *.temp
-.cache/
+*.bak
+*.old
+*.orig
 
-# Secrets and sensitive data
-secrets/
-*.key
+# Large media files
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.mp3
+*.flac
+*.wav
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.svg
+*.pdf
+
+# Archives and backups
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.gz
+
+# Compiled objects
+*.o
+*.obj
+*.pyc
+*.pyo
+*.class
+
+# Package manager files
+package-lock.json
+yarn.lock
+Pipfile.lock
+poetry.lock
+
+# Container and VM files
+*.vmdk
+*.vdi
+*.qcow2
+*.ova
+
+# Certificate and key files
 *.pem
+*.key
+*.crt
+*.cer
 *.p12
 *.pfx
-secrets.yaml
-secrets.yml
-.secrets/
+*.jks
 
-# Local development
-local/
-dev/
-development/
+# Password and secret files
+*.gpg
+*.asc
+secrets/
+.env
+!.env.tmpl
+data.yaml
 
-# Build outputs
-dist/
+# Large data files
+*.csv
+*.jsonl
+*.parquet
+*.feather
+*.hdf5
+*.h5
+
+# Model and data science files
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.pb
+*.onnx
+*.tflite
+
+# Documentation builds
+docs/_build/
 build/
-out/
+dist/
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# Test coverage
+.coverage
+coverage.xml
+*.cover
+
+# Profiling data
+*.prof
+*.lprof
 
 # Backup files
+*~
 *.bak
 *.backup
+*.orig
+*.rej
+
+# Editor temp files
+*.tmp
+*.swp
+*.swo
+*~
+
+# System files
+lost+found/
+.Trash/
+.Trashes/
+
+# Git files (shouldn't be committed anyway)
+.git/
+.gitignore
+
+# Chezmoi specific
+.chezmoi.toml.local
+.chezmoi.state
+.chezmoi.local
+
+# Executables and binaries
+bin/
+executable_*
+*.jar
+*.exe
+
+# Additional caches and transient dirs
+cache/
+logs/
+sessions/
+bundle/
+vendors/
+
+# Database WAL/SHM files
+*.db-wal
+*.db-shm
+
+# Git pack files (avoid committing large git objects)
+*.pack
+
+# chezmoi local state and caches (keep out of git)
+.chezmoi.toml.local
+.chezmoi.state
+.chezmoi.local
+
+# Additional ignores for large directories and files
+
+# Application data directories
+com.pieces.os/
+com.pieces.pfd/
+Flashpost/
+jamsplitter-cf/
+Cline/
+
+# Amp binary directory (contains large executables)
+dot_amp/bin/
+
+# Eclipse configuration and cache files
+dot_eclipse/*/configuration/
+dot_eclipse/*/.metadata/
+
+# iFlow session files (large JSONL files)
+dot_iflow/projects/*/*.jsonl
+
+# Shell snapshots (can be large)
+dot_claude/shell-snapshots/
+
+# .NET CRL files
+dot_dotnet/corefx/cryptography/crls/
+
+# Large binary libraries
+*.so
+*.dll
+*.dylib
+
+# Configuration files that can be large
+*.prefs
+*.properties
+
+# Temporary and backup files
+*~
+*.tmp
+*.temp

@@ -1,0 +1,260 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Script to discover and template secrets from Bitwarden for chezmoi
+# Searches for API keys, tokens, and SSH keys in Bitwarden vault
+
+LOG_LEVEL="${LOG_LEVEL:-INFO}"
+SESSION_FILE="${HOME}/.bw_session"
+
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
+}
+
+# Check if Bitwarden is unlocked
+if [[ ! -f "$SESSION_FILE" ]] || ! bw status --session "$(cat "$SESSION_FILE" 2>/dev/null)" >/dev/null 2>&1; then
+    log "Bitwarden vault is locked. Attempting to unlock..."
+
+    if [[ -n "${BW_PASSWORD:-}" ]]; then
+        BW_SESSION=$(bw unlock --raw "$BW_PASSWORD" 2>/dev/null)
+        echo "$BW_SESSION" > "$SESSION_FILE"
+        chmod 600 "$SESSION_FILE"
+    else
+        echo "Please enter your Bitwarden master password:"
+        BW_SESSION=$(bw unlock --raw)
+        echo "$BW_SESSION" > "$SESSION_FILE"
+        chmod 600 "$SESSION_FILE"
+    fi
+else
+    BW_SESSION=$(cat "$SESSION_FILE")
+fi
+
+export BW_SESSION
+
+# Function to get all items with their fields
+get_bw_items() {
+    bw list items --session "$BW_SESSION" 2>/dev/null
+}
+
+# Function to detect API keys and tokens using regex
+is_api_key() {
+    local value="$1"
+    # Common API key patterns
+    [[ "$value" =~ ^(sk-|pk_|xoxp-|xoxb-|ghp_|glpat|Bearer |Token |API_KEY|SECRET_KEY) ]] || \
+    [[ "$value" =~ ^[A-Za-z0-9_-]{20,}$ ]] && [[ ${#value} -gt 15 ]]
+}
+
+# Function to detect SSH keys
+is_ssh_key() {
+    local value="$1"
+    [[ "$value" =~ ^-----BEGIN (RSA|DSA|EC|OPENSSH) ]] || \
+    [[ "$value" =~ ^ssh-(rsa|dss|ed25519) ]]
+}
+
+# Function to detect SSH public keys
+is_ssh_public_key() {
+    local value="$1"
+    [[ "$value" =~ ^ssh-(rsa|dss|ed25519|ecdsa) ]] && [[ "$value" =~ \  ]]
+}
+
+log "Searching for secrets in Bitwarden..."
+
+# Get all items
+items=$(get_bw_items)
+
+# Arrays to store found secrets
+declare -a api_keys=()
+declare -a ssh_private_keys=()
+declare -a ssh_public_keys=()
+declare -a other_secrets=()
+
+# Process each item
+echo "$items" | jq -c '.[]' | while read -r item; do
+    name=$(echo "$item" | jq -r '.name')
+    id=$(echo "$item" | jq -r '.id')
+
+    # Check password field
+    password=$(echo "$item" | jq -r '.login.password // empty')
+    if [[ -n "$password" ]] && [[ "$password" != "null" ]]; then
+        if is_ssh_key "$password"; then
+            ssh_private_keys+=("$name:$id:password")
+            log "Found SSH private key: $name"
+        elif is_api_key "$password"; then
+            api_keys+=("$name:$id:password")
+            log "Found API key in password: $name"
+        elif [[ "$name" =~ (?i)(token|key|secret|auth) ]]; then
+            other_secrets+=("$name:$id:password")
+            log "Found potential secret in password: $name"
+        fi
+    fi
+
+    # Check custom fields
+    echo "$item" | jq -c '.fields[]?' 2>/dev/null | while read -r field; do
+        field_name=$(echo "$field" | jq -r '.name')
+        field_value=$(echo "$field" | jq -r '.value')
+
+        if [[ -n "$field_value" ]] && [[ "$field_value" != "null" ]]; then
+            if is_ssh_key "$field_value"; then
+                ssh_private_keys+=("$name:$id:field:$field_name")
+                log "Found SSH private key in field '$field_name': $name"
+            elif is_ssh_public_key "$field_value"; then
+                ssh_public_keys+=("$name:$id:field:$field_name")
+                log "Found SSH public key in field '$field_name': $name"
+            elif is_api_key "$field_value"; then
+                api_keys+=("$name:$id:field:$field_name")
+                log "Found API key in field '$field_name': $name"
+            elif [[ "$field_name" =~ (?i)(api.?key|token|secret|key|auth) ]]; then
+                other_secrets+=("$name:$id:field:$field_name")
+                log "Found secret in field '$field_name': $name"
+            fi
+        fi
+    done
+
+    # Check notes for SSH keys
+    notes=$(echo "$item" | jq -r '.notes // empty')
+    if [[ -n "$notes" ]] && [[ "$notes" != "null" ]]; then
+        if is_ssh_key "$notes"; then
+            ssh_private_keys+=("$name:$id:notes")
+            log "Found SSH private key in notes: $name"
+        elif is_ssh_public_key "$notes"; then
+            ssh_public_keys+=("$name:$id:notes")
+            log "Found SSH public key in notes: $name"
+        fi
+    fi
+done
+
+log "Discovery complete!"
+echo
+echo "=== SUMMARY ==="
+echo "API Keys found: ${#api_keys[@]}"
+echo "SSH Private Keys found: ${#ssh_private_keys[@]}"
+echo "SSH Public Keys found: ${#ssh_public_keys[@]}"
+echo "Other Secrets found: ${#other_secrets[@]}"
+echo
+
+# Create chezmoi templates
+create_templates() {
+    local chezmoi_dir="$HOME/.local/share/chezmoi"
+
+    # Create secrets directory if it doesn't exist
+    mkdir -p "$chezmoi_dir/secrets"
+
+    log "Creating chezmoi templates..."
+
+    # API Keys template
+    if [[ ${#api_keys[@]} -gt 0 ]]; then
+        cat > "$chezmoi_dir/secrets/api-keys.tmpl" << 'EOF'
+# API Keys from Bitwarden
+# Generated by discover-secrets.sh
+{{ range $index, $key := .api_keys }}
+# {{ $key.name }}
+export {{ $key.env_var }}="{{ $key.value }}"
+{{ end }}
+EOF
+        log "Created api-keys.tmpl"
+    fi
+
+    # SSH Keys template
+    if [[ ${#ssh_private_keys[@]} -gt 0 ]] || [[ ${#ssh_public_keys[@]} -gt 0 ]]; then
+        cat > "$chezmoi_dir/secrets/ssh-keys.tmpl" << 'EOF'
+# SSH Keys from Bitwarden
+# Generated by discover-secrets.sh
+{{ range $index, $key := .ssh_keys }}
+# {{ $key.name }} - {{ $key.type }}
+{{ $key.value }}
+{{ end }}
+EOF
+        log "Created ssh-keys.tmpl"
+    fi
+
+    # Other secrets template
+    if [[ ${#other_secrets[@]} -gt 0 ]]; then
+        cat > "$chezmoi_dir/secrets/other-secrets.tmpl" << 'EOF'
+# Other Secrets from Bitwarden
+# Generated by discover-secrets.sh
+{{ range $index, $secret := .other_secrets }}
+# {{ $secret.name }}
+export {{ $secret.env_var }}="{{ $secret.value }}"
+{{ end }}
+EOF
+        log "Created other-secrets.tmpl"
+    fi
+
+    # Create data file for templates
+    cat > "$chezmoi_dir/secrets/secrets.yaml" << EOF
+# Secrets data for chezmoi templates
+# This file contains references to Bitwarden items
+# Generated by discover-secrets.sh
+
+api_keys:
+EOF
+
+    for key in "${api_keys[@]}"; do
+        IFS=':' read -r name id location field <<< "$key"
+        env_var=$(echo "$name" | tr '[:lower:]' '[:upper:]' | sed 's/[^A-Z0-9]/_/g' | sed 's/__*/_/g' | sed 's/^_\|_$//g')_KEY
+        cat >> "$chezmoi_dir/secrets/secrets.yaml" << EOF
+  - name: "$name"
+    id: "$id"
+    location: "$location"
+    field: "${field:-}"
+    env_var: "$env_var"
+EOF
+    done
+
+    cat >> "$chezmoi_dir/secrets/secrets.yaml" << EOF
+
+ssh_keys:
+EOF
+
+    for key in "${ssh_private_keys[@]}" "${ssh_public_keys[@]}"; do
+        IFS=':' read -r name id location field <<< "$key"
+        key_type="private"
+        if [[ " ${ssh_public_keys[*]} " =~ " $key " ]]; then
+            key_type="public"
+        fi
+        cat >> "$chezmoi_dir/secrets/secrets.yaml" << EOF
+  - name: "$name"
+    id: "$id"
+    location: "$location"
+    field: "${field:-}"
+    type: "$key_type"
+EOF
+    done
+
+    cat >> "$chezmoi_dir/secrets/secrets.yaml" << EOF
+
+other_secrets:
+EOF
+
+    for secret in "${other_secrets[@]}"; do
+        IFS=':' read -r name id location field <<< "$secret"
+        env_var=$(echo "$name" | tr '[:lower:]' '[:upper:]' | sed 's/[^A-Z0-9]/_/g' | sed 's/__*/_/g' | sed 's/^_\|_$//g')_SECRET
+        cat >> "$chezmoi_dir/secrets/secrets.yaml" << EOF
+  - name: "$name"
+    id: "$id"
+    location: "$location"
+    field: "${field:-}"
+    env_var: "$env_var"
+EOF
+    done
+
+    log "Created secrets.yaml data file"
+}
+
+# Ask user if they want to create templates
+echo "Found secrets:"
+echo "- ${#api_keys[@]} API keys"
+echo "- ${#ssh_private_keys[@]} SSH private keys"
+echo "- ${#ssh_public_keys[@]} SSH public keys"
+echo "- ${#other_secrets[@]} other secrets"
+echo
+read -p "Create chezmoi templates for these secrets? (y/N): " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    create_templates
+    log "Templates created successfully!"
+else
+    log "Template creation skipped."
+fi
+
+log "Script completed."

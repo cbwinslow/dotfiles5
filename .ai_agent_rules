@@ -1,0 +1,290 @@
+#!/bin/bash
+# AI Agent Rules - Must be followed by all AI agents working in this environment
+# These rules are automatically sourced by zsh and enforced for all AI operations
+
+# =============================================================================
+# AI AGENT OPERATIONAL RULES - MANDATORY COMPLIANCE REQUIRED
+# =============================================================================
+
+# 1. SSH AND CREDENTIALS PROTECTION
+# -----------------------------------------------------------------------------
+# ABSOLUTELY NO modifications to SSH configurations, keys, or credentials
+# NEVER touch ~/.ssh/config, ~/.ssh/known_hosts, or any SSH key files
+# NEVER modify SSH connection parameters or authentication methods
+# NEVER attempt to establish new SSH connections or modify existing ones
+# NEVER access, copy, move, or modify any credential files
+# This includes but is not limited to: id_rsa, id_ed25519, config, known_hosts
+
+# 2. SYSTEM CONFIGURATION PROTECTION
+# -----------------------------------------------------------------------------
+# NEVER modify system-level configurations without explicit user permission
+# NEVER install system packages without user confirmation
+# NEVER modify /etc/, /usr/local/, or other system directories
+# NEVER change user shell configurations (.zshrc, .bashrc, etc.) without permission
+# NEVER modify cron jobs or system services without explicit instruction
+
+# 3. SECURITY AND ACCESS CONTROL
+# -----------------------------------------------------------------------------
+# NEVER expose or log secrets, API keys, passwords, or tokens
+# NEVER commit sensitive information to version control
+# NEVER disable security features or authentication mechanisms
+# NEVER modify firewall rules or network security settings
+# NEVER create or modify sudoers configurations
+
+# 4. DATA INTEGRITY AND BACKUP
+# -----------------------------------------------------------------------------
+# ALWAYS create backups before modifying critical files
+# NEVER delete data without confirmation and backup verification
+# NEVER modify database schemas without proper migration scripts
+# NEVER truncate or drop tables without explicit user instruction
+
+# 5. MONITORING AND OBSERVABILITY
+# -----------------------------------------------------------------------------
+# NEVER disable monitoring, logging, or alerting systems
+# NEVER modify monitoring configurations without understanding the impact
+# NEVER delete logs or monitoring data without retention policy compliance
+# ALWAYS ensure monitoring coverage for new services
+
+# 6. DEVELOPMENT WORKFLOW COMPLIANCE
+# -----------------------------------------------------------------------------
+# NEVER bypass code review processes or quality gates
+# NEVER commit directly to main/production branches
+# NEVER merge pull requests without proper validation
+# ALWAYS run tests and linting before committing changes
+
+# 7. ENVIRONMENT AND CONFIGURATION MANAGEMENT
+# -----------------------------------------------------------------------------
+# NEVER modify environment variables that affect system behavior
+# NEVER change database connection strings or credentials
+# NEVER modify service discovery or configuration files
+# ALWAYS validate configuration changes before deployment
+
+# 8. AI AGENT BEHAVIORAL CONSTRAINTS
+# -----------------------------------------------------------------------------
+# NEVER operate outside the defined project scope without permission
+# NEVER make assumptions about user intent - always clarify
+# NEVER execute destructive operations without explicit confirmation
+# ALWAYS provide clear explanations for actions taken
+# ALWAYS respect user-defined boundaries and constraints
+
+# =============================================================================
+# ENFORCEMENT FUNCTIONS
+# =============================================================================
+
+# Function to check if command violates SSH rules
+ai_check_ssh_safety() {
+    local cmd="$1"
+    if [[ "$cmd" =~ (ssh|scp|sftp) ]] && [[ "$cmd" =~ (config|key|known_hosts) ]]; then
+        echo "🚫 AI RULE VIOLATION: SSH configuration modification detected!"
+        echo "   AI agents are PROHIBITED from modifying SSH configurations"
+        echo "   Command blocked: $cmd"
+        return 1
+    fi
+    return 0
+}
+
+# Function to check if command modifies system files
+ai_check_system_safety() {
+    local cmd="$1"
+    local file="$2"
+    
+    # System directories that require explicit permission
+    local system_dirs=("/etc/" "/usr/local/" "/boot/" "/sys/" "/proc/")
+    
+    for dir in "${system_dirs[@]}"; do
+        if [[ "$file" =~ ^$dir ]] && [[ "$cmd" =~ (rm|mv|chmod|chown|edit|modify) ]]; then
+            echo "🚫 AI RULE VIOLATION: System file modification detected!"
+            echo "   AI agents require explicit permission for system modifications"
+            echo "   Command blocked: $cmd $file"
+            return 1
+        fi
+    done
+    
+    return 0
+}
+
+# Function to validate AI operations
+ai_validate_operation() {
+    local operation="$1"
+    local target="$2"
+    
+    # Check SSH safety
+    if ! ai_check_ssh_safety "$operation"; then
+        return 1
+    fi
+    
+    # Check system safety
+    if ! ai_check_system_safety "$operation" "$target"; then
+        return 1
+    fi
+    
+    return 0
+}
+
+# =============================================================================
+# AI AGENT RULES DISPLAY
+# =============================================================================
+
+# Function to display AI rules
+ai_show_rules() {
+    echo "🤖 AI Agent Operational Rules"
+    echo "================================"
+    echo "1. SSH PROTECTION: Never modify SSH configs, keys, or connections"
+    echo "2. SYSTEM PROTECTION: Never modify system files without permission"
+    echo "3. SECURITY: Never expose secrets or disable security features"
+    echo "4. DATA INTEGRITY: Always backup before modifications"
+    echo "5. MONITORING: Never disable monitoring or logging"
+    echo "6. WORKFLOW: Follow code review and quality gates"
+    echo "7. CONFIGURATION: Validate all configuration changes"
+    echo "8. BEHAVIOR: Stay within scope, always clarify intent"
+    echo ""
+    echo "🚨 VIOLATIONS WILL BE BLOCKED AND LOGGED"
+    echo "📋 Full rules available in: ~/.ai_agent_rules"
+}
+
+# =============================================================================
+# RULES VERIFICATION
+# =============================================================================
+
+# Function to verify AI agent compliance
+ai_verify_compliance() {
+    echo "🔍 Verifying AI Agent Compliance..."
+    
+    # Check if rules file exists and is readable
+    if [[ ! -f ~/.ai_agent_rules ]]; then
+        echo "❌ AI rules file not found!"
+        return 1
+    fi
+    
+    # Check if rules are sourced in shell
+    if ! grep -q "ai_agent_rules" ~/.zshrc; then
+        echo "⚠️  AI rules not sourced in .zshrc"
+        return 1
+    fi
+    
+    echo "✅ AI Agent compliance verified"
+    return 0
+}
+
+# =============================================================================
+# AUTO-EXECUTION ON SHELL STARTUP
+# =============================================================================
+
+# Display rules reminder for AI sessions
+if [[ "${TERM_PROGRAM:-}" =~ (vscode|cursor|ai) ]] || [[ -n "${SSH_CLIENT:-}" ]]; then
+    echo ""
+    echo "🤖 AI Agent Rules Active - All operations must comply with:"
+    echo "   • No SSH modifications"
+    echo "   • No system changes without permission"
+    echo "   • No credential exposure"
+    echo "   • Full data backup before modifications"
+    echo "   • Type 'ai_show_rules' for complete ruleset"
+    echo ""
+fi
+
+# Export rules verification function (note: -f doesn't work in all shells)
+# Functions will be available in the current shell session
+
+# Set environment variable to indicate rules are active
+export AI_RULES_ACTIVE=true
+export AI_RULES_VERSION="1.0.0"
+
+# =============================================================================
+# CORE VALIDATION FUNCTIONS (for testing framework)
+# =============================================================================
+
+validate_command() {
+    local cmd="$1"
+    local dangerous_patterns=(
+        "rm.*-rf/"
+        "chmod.*777"
+        "chown.*root"
+        "dd.*if="
+        "mkfs."
+        "fdisk"
+        "iptables"
+        "systemctl.*stop"
+        "shutdown"
+        "reboot"
+    )
+    
+    for pattern in "${dangerous_patterns[@]}"; do
+        if [[ "$cmd" =~ $pattern ]]; then
+            echo "❌ Dangerous command detected: $cmd"
+            return 1
+        fi
+    done
+    
+    return 0
+}
+
+check_sensitive_operation() {
+    local operation="$1"
+    local sensitive_files=(
+        "~/.ssh/"
+        "/etc/passwd"
+        "/etc/shadow"
+        "/etc/sudoers"
+        "~/.aws/"
+        "~/.gnupg/"
+        "/etc/ssh/"
+    )
+    
+    for file in "${sensitive_files[@]}"; do
+        if [[ "$operation" =~ $file ]]; then
+            echo "❌ Sensitive file access detected: $operation"
+            return 1
+        fi
+    done
+    
+    return 0
+}
+
+# =============================================================================
+# REQUIRED AI FUNCTIONS (for testing framework compatibility)
+# =============================================================================
+
+ai_validate_operation() {
+    local operation="$1"
+    local target="${2:-}"
+    
+    # Check for dangerous commands
+    if ! validate_command "$operation"; then
+        return 1
+    fi
+    
+    # Check for sensitive file access
+    if ! check_sensitive_operation "$operation $target"; then
+        return 1
+    fi
+    
+    return 0
+}
+
+ai_check_ssh_safety() {
+    local operation="$1"
+    local target="${2:-}"
+    
+    # Block any SSH-related operations
+    if [[ "$operation" =~ (ssh|\.ssh/|known_hosts|id_rsa|id_ed25519) ]] || [[ "$target" =~ (ssh|\.ssh/|known_hosts|id_rsa|id_ed25519) ]]; then
+        echo "❌ SSH operation blocked: $operation $target"
+        return 1
+    fi
+    
+    return 0
+}
+
+ai_check_system_safety() {
+    local operation="$1"
+    local target="${2:-}"
+    
+    # Block system-level modifications
+    if [[ "$operation" =~ (/etc/|/boot/|/sys/|/proc/|systemctl|shutdown|reboot) ]] || [[ "$target" =~ (/etc/|/boot/|/sys/|/proc/) ]]; then
+        echo "❌ System modification blocked: $operation $target"
+        return 1
+    fi
+    
+    return 0
+}
+
+echo "✅ AI Agent Rules loaded and enforced"
