@@ -1,0 +1,31 @@
+{
+  "tools": [
+    {
+      "name": "web_operations",
+      "description": "Generic web operations: HTTP GET/HEAD with robots.txt awareness and rate limiting.",
+      "categories": [
+        "web",
+        "http",
+        "research"
+      ],
+      "openai_compatible": true
+    },
+    {
+      "name": "data_processing",
+      "description": "Tabular and JSON data wrangling, grouping, statistics, and normalization.",
+      "categories": [
+        "data",
+        "analytics"
+      ],
+      "openai_compatible": true
+    },
+    {
+      "name": "file_operations",
+      "description": "Read/write local project files in a sandboxed workspace.",
+      "categories": [
+        "filesystem"
+      ],
+      "openai_compatible": true
+    }
+  ]
+}

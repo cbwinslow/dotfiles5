@@ -1,0 +1,50 @@
+tasks:
+  research_task:
+    description: |
+      Conduct a thorough web and document research about {topic}.
+      Cover definitions, current state, tools/libraries, risks,
+      and at least 5 high-signal references with URLs.
+    expected_output: |
+      A markdown outline with sections: Summary, Key Concepts, Tools,
+      Risks, Open Questions, and a Bullet List of Sources (with URLs).
+    agent: web_research_agent
+
+  analysis_task:
+    description: |
+      Using the research notes, normalize the information into a compact
+      set of bullet points and (if relevant) a comparison table.
+      Focus on trade-offs, implementation details, and gotchas.
+    expected_output: |
+      A markdown section with: Key Takeaways, Pros/Cons, Implementation
+      Checklist, and Unknowns/Assumptions.
+    agent: data_processing_agent
+    context:
+      - research_task
+
+  consensus_task:
+    description: |
+      Read the research and analysis outputs about {topic}. Resolve any
+      conflicts, explicitly call out disagreements, and propose a
+      consensus recommendation with rationale.
+    expected_output: |
+      A markdown report titled "Consensus Plan for {topic}", with sections
+      for: Agreed Points, Disagreements, Final Recommendation, and
+      Next Experiments to Validate.
+    agent: consensus_agent
+    context:
+      - research_task
+      - analysis_task
+
+  self_healing_task:
+    description: |
+      Review ALL previous outputs for {topic}. Identify gaps, missing data,
+      or suspicious reasoning patterns. Propose a prioritized list of
+      follow-up actions or tasks for the crew to re-run or extend.
+    expected_output: |
+      A markdown checklist of "Health Findings" with severity labels,
+      plus a concrete plan (1-3 steps) for improving the crew's work.
+    agent: self_healing_agent
+    context:
+      - research_task
+      - analysis_task
+      - consensus_task

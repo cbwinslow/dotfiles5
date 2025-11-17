@@ -1,0 +1,19 @@
+# ~/.config/cloudcurio/cloudcurio-repos.yml
+# Declarative list of CloudCurio-related repositories.
+
+repos:
+  - cloudcurio-map
+  - cloudcurio-infra
+  - cloudcurio-apps
+  - cloudcurio-agents
+  - cloudcurio-tools
+  - cloudcurio-knowledge
+  - cloudcurio-domain
+  - cloudcurio-monorepo
+  - cloudcurio-next-blog
+  - cloudcurio-ansible
+  - cloudcurio-hetzner
+  - cloudcurio.cc-CMS
+  - cloudcurio-feed
+  - cloudcurio-cloudflare-blog
+  - cloudcurio-stackhub

@@ -1,0 +1,1 @@
+# CloudCurio-tailored version placeholder

@@ -1,0 +1,13 @@
+# ~/.config/opendiscourse/opendiscourse-repos.yml
+# Declarative list of OpenDiscourse-related repositories.
+
+repos:
+  - opendiscourse
+  - opendiscourse-full-monorepo
+  - opendiscourse-gemini
+  - opendiscourse.net-cf
+  - opendiscourse.net---supacontainer
+  - autorag-opendiscourse
+  - political-analyst-database
+  - political-analysis-dbs
+  - api.congress.gov

@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+html-to-markdown
+openai
+# Optional integrations (uncomment as needed):
+# langfuse
+# langsmith
+# langchain
+# langgraph

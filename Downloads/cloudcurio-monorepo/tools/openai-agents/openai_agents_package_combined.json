@@ -1,0 +1,96 @@
+// Combined view of key files from the OpenAI-compatible agents package.
+// This is a convenience view for quick editing/inspection.
+
+// ===================== tools_registry.json =====================
+
+{
+  "version": "0.1.0",
+  "description": "Logical OpenAI-style tools for agents. Each item can be mapped to an OpenAI tool/function or MCP tool.",
+  "tools": [
+    { "name": "web_operations", "summary": "Perform HTTP requests and light scraping with robots.txt awareness." },
+    { "name": "file_operations", "summary": "Read and write project files in a controlled workspace." },
+    { "name": "data_processing", "summary": "Transform, aggregate, and analyze tabular data." },
+    { "name": "code_analysis", "summary": "Static analysis, linting, and security scanning for code files." },
+    { "name": "test_runner", "summary": "Execute test suites and capture results." },
+    { "name": "ci_cd_control", "summary": "Trigger and inspect CI/CD pipelines." },
+    { "name": "monitoring_metrics", "summary": "Query monitoring and logging backends for signals." },
+    { "name": "ml_experiments", "summary": "Launch and inspect ML training and evaluation jobs." },
+    { "name": "viz_dashboard", "summary": "Create visualizations and dashboards from structured data." },
+    { "name": "search_api", "summary": "Semantic/keyword search over indexed documents." },
+    { "name": "crm_api", "summary": "Access CRM objects such as contacts and deals." },
+    { "name": "ticketing_api", "summary": "Interact with ticketing systems like Jira or GitHub Issues." },
+    { "name": "identity_access_api", "summary": "Check and modify IAM/RBAC-related information." },
+    { "name": "mcp_runtime", "summary": "Discover and invoke MCP tools across connected servers." },
+    { "name": "vector_memory", "summary": "Store and retrieve long-term vectorized memory items." },
+    { "name": "cache_store", "summary": "Short-lived key-value storage for ephemeral state." }
+  ]
+}
+
+// ===================== toolsets.json =====================
+
+{
+  "version": "0.1.0",
+  "description": "Named toolsets referencing logical tools in tools_registry.json.",
+  "toolsets": {
+    "web_research": ["web_operations", "data_processing", "file_operations"],
+    "code_dev": ["code_analysis", "file_operations", "test_runner", "ci_cd_control"],
+    "analytics": ["data_processing", "viz_dashboard", "vector_memory"],
+    "enterprise_integration": ["crm_api", "ticketing_api", "identity_access_api", "data_processing"],
+    "infra_ops": ["monitoring_metrics", "ci_cd_control", "file_operations"],
+    "memory_tools": ["vector_memory", "cache_store"],
+    "mcp_discovery": ["mcp_runtime", "file_operations"]
+  }
+}
+
+// ===================== agents_index.json (excerpt) =====================
+
+{
+  "version": "0.1.0",
+  "description": "Index of OpenAI-compatible agents with categories and toolsets.",
+  "agents": [
+    {
+      "agent_name": "Web Research Agent",
+      "agent_type": "research",
+      "category": "Research & Analysis",
+      "description": "Performs comprehensive web research, extraction, and synthesis.",
+      "toolsets": ["web_research"]
+    },
+    {
+      "agent_name": "Code Analysis Agent",
+      "agent_type": "development",
+      "category": "Development & Engineering",
+      "description": "Performs static analysis, refactoring suggestions, and security checks on code.",
+      "toolsets": ["code_dev"]
+    },
+    {
+      "agent_name": "Data Processing Agent",
+      "agent_type": "analytics",
+      "category": "Data & Analytics",
+      "description": "Cleans, transforms, and summarizes tabular data sets.",
+      "toolsets": ["analytics"]
+    },
+    {
+      "agent_name": "Democratic Consensus Coordinator Agent",
+      "agent_type": "system",
+      "category": "System & Multi-Agent",
+      "description": "Aggregates perspectives from multiple agents and synthesizes a consensus decision.",
+      "toolsets": ["mcp_discovery", "memory_tools"]
+    },
+    {
+      "agent_name": "Self-Healing Orchestrator Agent",
+      "agent_type": "system",
+      "category": "System & Multi-Agent",
+      "description": "Monitors agent performance, reroutes around failures, and triggers fallbacks.",
+      "toolsets": ["infra_ops", "mcp_discovery"]
+    },
+    {
+      "agent_name": "Memory Management Agent",
+      "agent_type": "system",
+      "category": "System & Multi-Agent",
+      "description": "Manages short-term caches and long-term vector memory compaction and retention.",
+      "toolsets": ["memory_tools", "analytics"]
+    }
+  ]
+}
+
+// Full, detailed JSON versions for all files are stored in the zip you can download from this conversation.

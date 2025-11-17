@@ -1,0 +1,26 @@
+{
+  "agents": [
+    {
+      "id": "web_research_agent",
+      "config_file": "agents/web_research_agent.json",
+      "toolsets": [
+        "web_research"
+      ]
+    },
+    {
+      "id": "code_analysis_agent",
+      "config_file": "agents/code_analysis_agent.json",
+      "toolsets": [
+        "code_development"
+      ]
+    },
+    {
+      "id": "data_processing_agent",
+      "config_file": "agents/data_processing_agent.json",
+      "toolsets": [
+        "web_research",
+        "code_development"
+      ]
+    }
+  ]
+}

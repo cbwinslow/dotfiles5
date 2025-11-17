@@ -1,0 +1,29 @@
+# Gemini global configuration example
+
+version: 1
+journaling:
+  base_dir: "~/.gemini/journals"
+  update_frequency:
+    max_prompts_without_flush: 3
+    max_minutes_without_flush: 60
+
+memory:
+  backend: "sqlite+vectors"
+  db_path: "~/.gemini/memory.db"
+  embedding_model: "text-embedding-3-large"
+  max_entries_per_project: 10000
+
+secrets:
+  provider: "bitwarden"  # or "env", "none"
+  env_paths:
+    - "./.env"
+    - "~/.env"
+
+extensions:
+  marketplace_url_env: "GEMINI_MARKETPLACE_URL"
+  marketplace_token_env: "GEMINI_MARKETPLACE_TOKEN"
+  state_file: "~/.gemini/extensions_state.json"
+
+cli:
+  default_project_root: "."
+  safe_mode: true

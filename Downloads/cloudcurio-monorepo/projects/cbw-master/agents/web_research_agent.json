@@ -1,0 +1,109 @@
+{
+  "agent_name": "Web Research Agent",
+  "agent_type": "research",
+  "version": "1.0.0",
+  "description": "Specialized agent for conducting comprehensive web research and data extraction",
+  "capabilities": [
+    "web_scraping",
+    "data_extraction",
+    "content_analysis",
+    "source_validation",
+    "report_generation"
+  ],
+  "tools": [
+    "web_operations",
+    "data_processing",
+    "file_operations"
+  ],
+  "toolsets": [
+    "web_research"
+  ],
+  "configuration": {
+    "max_sources_per_topic": 15,
+    "request_delay": 1.5,
+    "content_length_limit": 1000000,
+    "retry_attempts": 3,
+    "timeout_seconds": 30,
+    "allowed_domains": [],
+    "blocked_domains": [
+      "spam.com",
+      "malicious-site.net"
+    ],
+    "user_agent": "CBW-Research-Agent/1.0"
+  },
+  "behavior": {
+    "approach": "systematic",
+    "verification_level": "high",
+    "source_criticism": "critical",
+    "data_validation": "strict",
+    "citation_format": "academic"
+  },
+  "output_format": {
+    "default": "structured_json",
+    "alternatives": [
+      "markdown_report",
+      "academic_citation",
+      "summary_brief"
+    ]
+  },
+  "safety_constraints": {
+    "max_requests_per_minute": 20,
+    "max_concurrent_requests": 3,
+    "respect_robots_txt": true,
+    "validate_ssl_certificates": true,
+    "no_personal_data_extraction": true
+  },
+  "memory_management": {
+    "max_cache_size_mb": 512,
+    "session_timeout_minutes": 60,
+    "auto_cleanup": true
+  },
+  "error_handling": {
+    "retry_on_failure": true,
+    "fallback_strategies": [
+      "use_cached_data",
+      "try_alternative_source",
+      "skip_and_continue"
+    ],
+    "error_reporting": "detailed"
+  },
+  "monitoring": {
+    "log_level": "info",
+    "metrics_collection": true,
+    "performance_tracking": true,
+    "audit_trail": true
+  },
+  "custom_prompts": {
+    "research_initiation": "Conduct comprehensive research on {topic} focusing on {focus_areas}. Validate sources and extract key insights.",
+    "source_evaluation": "Evaluate this source for credibility, accuracy, and relevance to the research topic.",
+    "synthesis": "Synthesize findings from multiple sources into a coherent analysis with proper citations.",
+    "report_generation": "Generate a structured research report with executive summary, methodology, findings, and conclusions."
+  },
+  "integration_points": {
+    "apis": [
+      "search_api",
+      "citation_api",
+      "plagiarism_check_api"
+    ],
+    "databases": [
+      "research_cache",
+      "source_reputation_db"
+    ],
+    "external_services": [
+      "academic_databases",
+      "news_aggregators"
+    ]
+  },
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "date": "2025-11-12",
+      "changes": "Initial release with web research capabilities"
+    }
+  ],
+  "maintenance": {
+    "last_updated": "2025-11-12",
+    "next_review": "2025-12-12",
+    "update_frequency": "monthly"
+  }
+}

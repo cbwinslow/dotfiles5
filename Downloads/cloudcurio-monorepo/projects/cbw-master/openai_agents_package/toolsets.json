@@ -1,0 +1,21 @@
+{
+  "toolsets": [
+    {
+      "name": "web_research",
+      "description": "Tools focused on OSINT-style web research and scraping.",
+      "tools": [
+        "web_operations",
+        "data_processing",
+        "file_operations"
+      ]
+    },
+    {
+      "name": "code_development",
+      "description": "Tools for code analysis, linting, and refactors.",
+      "tools": [
+        "file_operations",
+        "data_processing"
+      ]
+    }
+  ]
+}
