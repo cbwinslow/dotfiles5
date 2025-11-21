@@ -190,6 +190,14 @@ secrets/
 !.env.tmpl
 data.yaml
 
+# OAuth and API credentials (NEVER commit these)
+.gemini/oauth_creds.json
+.gemini/private_oauth_creds.json
+*oauth_creds.json
+*oauth_tokens.json
+*api_keys.json
+*private_creds.json
+
 # Large data files
 *.csv
 *.jsonl
