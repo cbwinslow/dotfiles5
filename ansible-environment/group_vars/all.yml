@@ -1,0 +1,40 @@
+---
+# Global variables for all hosts
+# System configuration
+system_timezone: "America/New_York"
+system_locale: "en_US.UTF-8"
+
+# Package manager preferences
+package_manager_update: true
+package_manager_upgrade: true
+
+# Development tools configuration
+development_environment: true
+python_dev: true
+nodejs_dev: true
+go_dev: true
+rust_dev: true
+java_dev: true
+
+# Security settings
+security_hardening: true
+firewall_enabled: true
+encryption_setup: true
+
+# AI and automation
+ai_tools_enabled: true
+ansible_controller: true
+mcp_servers: true
+
+# Shell configuration
+shell_zsh: true
+shell_bash: true
+shell_tmux: true
+
+# Docker and containers
+docker_enabled: true
+podman_enabled: true
+
+# Backup and sync
+backup_enabled: true
+sync_enabled: true

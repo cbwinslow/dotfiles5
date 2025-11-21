@@ -1,0 +1,16 @@
+---
+- name: Security and Encryption Setup
+  hosts: localhost
+  connection: local
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  tasks:
+    - name: Configure security settings
+      include_tasks: ../tasks/security-hardening.yml
+      
+    - name: Set up encryption
+      include_tasks: ../tasks/setup-encryption.yml
+      
+    - name: Configure firewall
+      include_tasks: ../tasks/configure-firewall.yml

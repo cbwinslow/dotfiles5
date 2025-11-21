@@ -1,0 +1,16 @@
+---
+# Master site playbook - orchestrates entire environment setup
+- name: Master Configuration Setup
+  import_playbook: playbooks/master-setup.yml
+  
+- name: Development Environment Setup  
+  import_playbook: playbooks/dev-environment.yml
+  
+- name: Security and Encryption Setup
+  import_playbook: playbooks/security-setup.yml
+  
+- name: AI Tools and Agents Setup
+  import_playbook: playbooks/ai-tools.yml
+
+- name: Shell and Terminal Setup
+  import_playbook: playbooks/shell-setup.yml

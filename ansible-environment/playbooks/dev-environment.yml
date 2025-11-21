@@ -1,0 +1,16 @@
+---
+- name: Development Environment Setup
+  hosts: localhost
+  connection: local
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  tasks:
+    - name: Install programming languages
+      include_tasks: ../tasks/install-languages.yml
+      
+    - name: Set up development tools
+      include_tasks: ../tasks/setup-dev-tools.yml
+      
+    - name: Configure development environment
+      include_tasks: ../tasks/configure-dev-environment.yml

@@ -1,0 +1,19 @@
+---
+- name: Master System Setup
+  hosts: localhost
+  connection: local
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  tasks:
+    - name: Update system packages
+      include_tasks: ../tasks/update-system.yml
+      
+    - name: Install base packages
+      include_tasks: ../tasks/install-base-packages.yml
+      
+    - name: Configure system settings
+      include_tasks: ../tasks/configure-system.yml
+      
+    - name: Set up user directories
+      include_tasks: ../tasks/setup-directories.yml

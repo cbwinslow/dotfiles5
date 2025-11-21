@@ -1,0 +1,16 @@
+---
+- name: AI Tools and Agents Setup
+  hosts: localhost
+  connection: local
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  tasks:
+    - name: Install AI development tools
+      include_tasks: ../tasks/install-ai-tools.yml
+      
+    - name: Configure MCP servers
+      include_tasks: ../tasks/setup-mcp-servers.yml
+      
+    - name: Set up AI agents
+      include_tasks: ../tasks/configure-ai-agents.yml

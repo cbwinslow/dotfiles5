@@ -1,0 +1,19 @@
+---
+- name: Shell and Terminal Setup
+  hosts: localhost
+  connection: local
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+  tasks:
+    - name: Configure Zsh shell
+      include_tasks: ../tasks/configure-zsh.yml
+      
+    - name: Set up Bash
+      include_tasks: ../tasks/configure-bash.yml
+      
+    - name: Configure Tmux
+      include_tasks: ../tasks/configure-tmux.yml
+      
+    - name: Set up terminal tools
+      include_tasks: ../tasks/setup-terminal-tools.yml
