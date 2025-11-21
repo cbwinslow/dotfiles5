@@ -1,0 +1,144 @@
+---
+- name: Complete Software Installation
+  hosts: all
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+    
+  vars:
+    # DNF/Fedora packages
+    dnf_packages:
+      - name: "gitui"
+        description: "Blazing fast TUI for git"
+      - name: "newrelic"
+        description: "APM and monitoring tool"
+      - name: "occtx"
+        description: "OpenShift CLI tool"
+        
+    # Flatpak applications
+    flatpak_apps:
+      - { app_id: "app.bluebubbles.BlueBubbles", name: "BlueBubbles", description: "Android messaging desktop client" }
+      - { app_id: "app.freelens.Freelens", name: "Freelens", description: "Lens Protocol client" }
+      - { app_id: "app.zen_browser.zen", name: "Zen Browser", description: "Privacy-focused browser" }
+      - { app_id: "br.com.wiselabs.simplexity", name: "Simplexity", description: "SimpleX chat client" }
+      - { app_id: "chat.delta.desktop", name: "Delta Chat", description: "Email-based messaging" }
+      - { app_id: "chat.revolt.RevoltDesktop", name: "Revolt", description: "Modern chat platform" }
+      - { app_id: "com.anydesk.Anydesk", name: "AnyDesk", description: "Remote desktop software" }
+      - { app_id: "com.brave.Browser", name: "Brave Browser", description: "Privacy browser" }
+      - { app_id: "com.bitwig.BitwigStudio", name: "Bitwig Studio", description: "Digital audio workstation" }
+      - { app_id: "com.bespokesynth.BespokeSynth", name: "BespokeSynth", description: "Software synthesizer" }
+      - { app_id: "com.brosix.Brosix", name: "Brosix", description: "Team messaging" }
+      - { app_id: "com.cassidyjames.plausible", name: "Tally", description: "Plausible Analytics client" }
+      - { app_id: "com.cherry_ai.CherryStudio", name: "Cherry Studio", description: "AI assistant interface" }
+      - { app_id: "com.devolutions.remotedesktopmanager", name: "Remote Desktop Manager", description: "Centralized remote connections" }
+      - { app_id: "com.diffingo.fwbackups", name: "fwbackups", description: "Backup software" }
+        
+    # Snap applications
+    snap_apps:
+      - { name: "bare", classic: false, description: "Container runtime" }
+      - { name: "prometheus", classic: false, description: "Monitoring system" }
+      - { name: "raindrop", classic: false, description: "Bookmark manager" }
+      
+    # Local bin tools installation
+    local_bin_tools:
+      - { repo: "https://github.com/extrawurst/gitui.git", binary: "gitui", dest: "gitui" }
+      - { repo: "https://github.com/newrelic/newrelic-cli.git", binary: "newrelic", dest: "newrelic" }
+      - { repo: "https://github.com/openshift/oc.git", binary: "oc", dest: "occtx" }
+
+  tasks:
+    # DNF Package Management
+    - name: Update DNF repositories
+      shell: dnf update -y
+      
+    - name: Install DNF packages
+      dnf:
+        name: "{{ item.name }}"
+        state: present
+      loop: "{{ dnf_packages }}"
+      when: install_system_packages | default(true)
+      notify:
+        - DNF cleanup
+        
+    # Flatpak Application Management
+    - name: Update Flatpak remotes
+      shell: flatpak update --appstream
+      
+    - name: Install Flatpak applications
+      shell: |
+        {% for app in flatpak_apps %}
+          echo "Installing {{ app.name }} ({{ app.app_id }})..."
+          flatpak install -y flathub {{ app.app_id }}
+        {% endfor %}
+      args:
+        executable: /bin/bash
+      become_user: "{{ dev_user }}"
+      when: install_flatpak_apps | default(true)
+      
+    # Snap Application Management
+    - name: Wait for snap to be ready
+      shell: |
+        until snap list >/dev/null 2>&1; do
+          sleep 2
+        done
+        
+    - name: Install Snap applications
+      snap:
+        name: "{{ item.name }}"
+        classic: "{{ item.classic | default(false) }}"
+        state: present
+      loop: "{{ snap_apps }}"
+      when: install_snap_apps | default(true)
+      
+    # Local Binary Installation
+    - name: Create local bin directory
+      file:
+        path: "/home/{{ dev_user }}/.local/bin"
+        state: directory
+        mode: '0755'
+        owner: "{{ dev_user }}"
+        group: "{{ dev_user }}"
+        
+    - name: Install local bin tools from GitHub
+      git:
+        repo: "{{ item.repo }}"
+        dest: "/tmp/{{ item.dest }}"
+        depth: 1
+        force: yes
+      loop: "{{ local_bin_tools }}"
+      
+    - name: Build and install local bin tools
+      shell: |
+        cd /tmp/{{ item.dest }}
+        {% if item.binary == 'gitui' %}
+          cargo build --release
+          cp target/release/gitui /home/{{ dev_user }}/.local/bin/
+        {% elif item.binary == 'newrelic' %}
+          go build -o /home/{{ dev_user }}/.local/bin/newrelic ./cmd/newrelic
+        {% elif item.binary == 'oc' %}
+          make build
+          cp bin/oc /home/{{ dev_user }}/.local/bin/occtx
+        {% endif %}
+        chmod +x /home/{{ dev_user }}/.local/bin/{{ item.dest }}
+      args:
+        executable: /bin/bash
+      loop: "{{ local_bin_tools }}"
+      when: install_local_tools | default(true)
+      
+    - name: Cleanup temporary build directories
+      file:
+        path: "/tmp/{{ item.dest }}"
+        state: absent
+      loop: "{{ local_bin_tools }}"
+        
+    - name: Set ownership of local bin tools
+      file:
+        path: "/home/{{ dev_user }}/.local/bin"
+        state: directory
+        recurse: yes
+        owner: "{{ dev_user }}"
+        group: "{{ dev_user }}"
+        mode: '0755'
+
+  handlers:
+    - name: DNF cleanup
+      shell: dnf autoremove -y && dnf clean all
