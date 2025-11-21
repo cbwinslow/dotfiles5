@@ -310,4 +310,8 @@ dot_dotnet/corefx/cryptography/crls/
 # Temporary and backup files
 *~
 *.tmp
-*.temp
+*.temp# Embedded git repositories (VS Code and other tools)
+.config/Code*/User/globalStorage/**/checkpoints/*
+.config/Code*/User/globalStorage/**/tasks/*/checkpoints/*
+.config/Code-Insiders/User/globalStorage/**/checkpoints/*
+.config/Code-Insiders/User/globalStorage/**/tasks/*/checkpoints/*
