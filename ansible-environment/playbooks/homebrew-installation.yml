@@ -1,0 +1,228 @@
+---
+- name: Homebrew Installation
+  hosts: all
+  become: true
+  vars_files:
+    - ../group_vars/all.yml
+    
+  vars:
+    # Homebrew taps
+    homebrew_taps:
+      - "charmbracelet/tap"
+      - "hungthai1401/tap"
+      - "sorenisanerd/gotty"
+      - "stakpak/stakpak"
+      - "vinhnx/tap"
+        
+    # Homebrew formulae (CLI tools)
+    homebrew_formulae:
+      - name: "asdf"
+        description: "Version manager for multiple languages"
+      - name: "autocode"
+        description: "Automated coding assistant"
+      - name: "cagent"
+        description: "Code agent framework"
+      - name: "cask"
+        description: "Homebrew cask extension"
+      - name: "claude-code-router"
+        description: "Claude code routing tool"
+      - name: "claude-code-templates"
+        description: "Claude code templates"
+      - name: "code-cli"
+        description: "Visual Studio Code CLI"
+      - name: "code-minimap"
+        description: "Code minimap generator"
+      - name: "code-server"
+        description: "VS Code server"
+        restart_service: true
+      - name: "code2prompt"
+        description: "Code to prompt converter"
+      - name: "codeberg-cli"
+        description: "Codeberg CLI tool"
+      - name: "codebook-lsp"
+        description: "Codebook language server"
+      - name: "codec2"
+        description: "Codec 2 audio compression"
+      - name: "codecov-cli"
+        description: "Codecov CLI tool"
+      - name: "codequery"
+        description: "Code search and query tool"
+      - name: "coder"
+        description: "AI coding assistant"
+      - name: "codesnap"
+        description: "Code screenshot tool"
+      - name: "codespell"
+        description: "Code spell checker"
+      - name: "codevis"
+        description: "Code visualization tool"
+      - name: "color-code"
+        description: "Code colorization tool"
+      - name: "cycode"
+        description: "Code security scanner"
+      - name: "docker-completion"
+        description: "Docker shell completion"
+      - name: "gcc"
+        description: "GNU Compiler Collection"
+      - name: "eccodes"
+        description: "Error code utilities"
+      - name: "gecode"
+        description: "Game development tools"
+      - name: "gemini-cli"
+        description: "Gemini AI CLI"
+      - name: "geocode-glib"
+        description: "Geocoding library"
+      - name: "git-codereview"
+        description: "Git code review tool"
+      - name: "git-filter-repo"
+        description: "Git repository filtering"
+      - name: "git-remote-codecommit"
+        description: "AWS CodeCommit Git helper"
+      - name: "leetcode-cli"
+        description: "LeetCode problem solver"
+      - name: "lolcode"
+        description: "LOLCODE interpreter"
+      - name: "ode"
+        description: "Ordinary differential equation solver"
+      - name: "php-code-sniffer"
+        description: "PHP code quality checker"
+      - name: "pycodestyle"
+        description: "Python style checker"
+      - name: "qrencode"
+        description: "QR code generator"
+      - name: "qwen-code"
+        description: "Qwen AI coding model"
+      - name: "recode"
+        description: "Character encoding converter"
+      - name: "swagger-codegen"
+        description: "Swagger code generator"
+      - name: "vtcode"
+        description: "VS Code alternative"
+      - name: "wtfutil"
+        description: "System information tool"
+      - name: "x-cmd"
+        description: "X command utilities"
+      - name: "yadm"
+        description: "Yet Another Dotfiles Manager"
+      - name: "yydecode"
+        description: "YEnc decoder"
+      - name: "charmbracelet/tap/charm"
+        description: "Charm CLI tools"
+      - name: "charmbracelet/tap/soft-serve"
+        description: "Soft serve server"
+      - name: "hungthai1401/tap/occtx"
+        description: "OpenShift CLI context switcher"
+      - name: "sorenisanerd/gotty/gotty"
+        description: "GoTTY terminal sharing"
+      - name: "stakpak/stakpak/stakpak"
+        description: "Stack management tool"
+        
+    # Homebrew casks (GUI applications)
+    homebrew_casks:
+      - name: "codex"
+        description: "AI coding assistant application"
+
+  tasks:
+    # Check if Homebrew is installed
+    - name: Check Homebrew installation
+      shell: |
+        if command -v brew >/dev/null 2>&1; then
+          echo "Homebrew is already installed"
+          exit 0
+        else
+          echo "Installing Homebrew..."
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          exit 1
+        fi
+      register: homebrew_check
+      changed_when: homebrew_check.rc == 1
+      
+    # Add Homebrew taps
+    - name: Add Homebrew taps
+      shell: |
+        {% for tap in homebrew_taps %}
+          echo "Adding tap: {{ tap }}"
+          brew tap {{ tap }} 2>/dev/null || echo "Tap {{ tap }} already exists"
+        {% endfor %}
+      args:
+        executable: /bin/bash
+      when: install_homebrew_tools | default(true)
+      
+    # Install Homebrew formulae
+    - name: Install Homebrew formulae
+      shell: |
+        {% for formula in homebrew_formulae %}
+          echo "Installing formula: {{ formula.name }} - {{ formula.description }}"
+          if brew list {{ formula.name }} >/dev/null 2>&1; then
+            echo "{{ formula.name }} is already installed"
+          else
+            brew install {{ formula.name }}
+            {% if formula.restart_service is defined and formula.restart_service %}
+              echo "Restarting service for {{ formula.name }}..."
+              brew services restart {{ formula.name }}
+            {% endif %}
+          fi
+        {% endfor %}
+      args:
+        executable: /bin/bash
+      when: install_homebrew_tools | default(true)
+      
+    # Install Homebrew casks
+    - name: Install Homebrew casks
+      shell: |
+        {% for cask in homebrew_casks %}
+          echo "Installing cask: {{ cask.name }} - {{ cask.description }}"
+          if brew list --cask {{ cask.name }} >/dev/null 2>&1; then
+            echo "{{ cask.name }} is already installed"
+          else
+            brew install --cask {{ cask.name }}
+          fi
+        {% endfor %}
+      args:
+        executable: /bin/bash
+      when: install_homebrew_tools | default(true)
+      
+    # Update Homebrew
+    - name: Update Homebrew
+      shell: |
+        echo "Updating Homebrew..."
+        brew update
+        brew upgrade
+      args:
+        executable: /bin/bash
+      when: update_homebrew | default(true)
+      
+    # Clean up Homebrew
+    - name: Clean up Homebrew
+      shell: |
+        echo "Cleaning up Homebrew..."
+        brew cleanup --prune=30
+      args:
+        executable: /bin/bash
+      when: cleanup_homebrew | default(true)
+      
+    # Verify installations
+    - name: Verify Homebrew installations
+      shell: |
+        echo "=== Homebrew Installation Summary ==="
+        echo "Taps added:"
+        brew tap
+        echo ""
+        echo "Formulae installed:"
+        brew list --formulae | wc -l
+        echo ""
+        echo "Casks installed:"
+        brew list --casks | wc -l
+        echo ""
+        echo "Installation completed successfully!"
+      args:
+        executable: /bin/bash
+
+  handlers:
+    - name: Restart Homebrew services
+      shell: |
+        {% for formula in homebrew_formulae %}
+          {% if formula.restart_service is defined and formula.restart_service %}
+            brew services restart {{ formula.name }}
+          {% endif %}
+        {% endfor %}
+      listen: "Restart homebrew services"
